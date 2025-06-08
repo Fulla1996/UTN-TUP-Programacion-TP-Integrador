@@ -28,7 +28,7 @@ def selection_sort(arr):
         # Intercambiar el elemento mínimo con el elemento actual
         arr[i], arr[min_index] = arr[min_index], arr[i]
 
-def quick_sort(arr):
+def quick_sort_rand(arr):
     if len(arr) <= 1:
         return arr
     else:
@@ -37,6 +37,15 @@ def quick_sort(arr):
         greater = [x for x in arr[1:] if x > pivot]
         return quick_sort(less) + [pivot] + quick_sort(greater)
 
+def quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    else:
+        pivot = random.choice(arr)
+        less = [x for x in arr[1:] if x <= pivot]
+        greater = [x for x in arr[1:] if x > pivot]
+        return quick_sort(less) + [pivot] + quick_sort(greater)
+    
 def bubble_sort(arr):
     arr_aux = arr[:]
     for i in range(0,len(arr_aux)-1):
@@ -64,9 +73,16 @@ def busqueda_binaria(lista, objetivo):
     return -1
 
 #Se inicializa una lista con números aleatorios
-lista_datos = [random.randint(1, 1000) for _ in range(8000)]
+lista_datos = [random.randint(1, 1000) for _ in range(20000)]
 #Se define una lista de funciones a utilizar
-funciones_a_usar = [bubble_sort, quick_sort, insertion_sort, selection_sort, list.sort]
+funciones_a_usar = [
+    bubble_sort,
+    #quick_sort,
+    quick_sort_rand,
+    insertion_sort,
+    selection_sort,
+    list.sort
+]
 
 
 #Se ejecutan las funciones listadas a través de una función que incluye la funcionalidad del TimeIt con mensajes de consola
@@ -76,9 +92,11 @@ for funcion in funciones_a_usar:
 #Se ordena el listado
 lista_datos = quick_sort(lista_datos)
 #Se incorporan más datos
-#lista_datos+= [random.randint(1, 1000) for _ in range(10)]
+cant = 100
+print(f"Se incorporan {cant} nuevos datos")
+lista_datos+= [random.randint(1, 1000) for _ in range(cant)]
 
 #Se vuelven a ejecutar las funciones listadas
 for funcion in funciones_a_usar:
-    ejec_con_timer(funcion, lista_datos)
+    ejec_con_timer(funcion, lista_datos.copy())
 
