@@ -3,10 +3,12 @@ import timeit
 import random
 import string
 
+#Para generar strings aleatorios
 def rand_str(k = 10):
     random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=k))
     return random_string
 
+#Para ejecutar función y devolver timer
 def ejec_con_timer(funcion, array):
     start_time = timeit.default_timer()
     funcion(array)
@@ -81,7 +83,7 @@ funciones_a_usar = [
     list.sort
 ]
 
-#Se ejecutan las funciones listadas a través de una función que incluye la funcionalidad del TimeIt con mensajes de consola
+#Se ejecutan las funciones listadas a través de una función que incluye la funcionalidad del TimeIt
 for i in range(10):
     for funcion in funciones_a_usar:
         resultadosStrPreOrden[funcion.__name__].append(ejec_con_timer(funcion, lista_datos_str.copy()))
@@ -90,6 +92,7 @@ for i in range(10):
 #Se ordena el listado
 lista_datos = quick_sort_rand(lista_datos)
 lista_datos_str = quick_sort_rand(lista_datos_str)
+
 #Se incorporan más datos
 cant = 200
 print(f"Se incorporan {cant} nuevos datos")
@@ -102,6 +105,8 @@ for i in range(10):
         resultadosStrPostOrden[funcion.__name__].append(ejec_con_timer(funcion, lista_datos_str.copy()))
         resultadosIntPostOrden[funcion.__name__].append(ejec_con_timer(funcion, lista_datos.copy()))
 
+
+#Se listas resultados para ser llevados a informe
 for funcion in funciones_a_usar:
     print(f"Los tiempos antes de ordenar de {funcion.__name__} sobre Int son: {resultadosIntPreOrden[funcion.__name__]}")
     print(f"Los tiempos antes de ordenar de {funcion.__name__} sobre Strings son: {resultadosStrPreOrden[funcion.__name__]}")
