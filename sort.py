@@ -1,33 +1,18 @@
+from collections import defaultdict
 import timeit
 import random
 import string
 
-length = 8
 def rand_str(k = 10):
-    random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+    random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=k))
     return random_string
 
-def eliminar_duplicados(lista):
-    lista_sin_duplicados = []
-    vistos = set()
-    for item in lista:
-        if item not in vistos:
-            lista_sin_duplicados.append(item)
-            vistos.add(item)
-    return lista_sin_duplicados
-
-def ejec_con_timer(funcion, array, dato_obj = None):
-    if dato_obj is None:
-        start_time = timeit.default_timer()
-        funcion(array)
-        end_time = timeit.default_timer()
-        print(f"Tiempo de ejecución de {funcion.__name__}, {(end_time - start_time)}, segundos")
-    else:
-        start_time = timeit.default_timer()
-        ret = funcion(array, dato_obj)
-        end_time = timeit.default_timer()
-        print(f"Tiempo de ejecución de {funcion.__name__}, {(end_time - start_time)}, segundos")
-        return ret
+def ejec_con_timer(funcion, array):
+    start_time = timeit.default_timer()
+    funcion(array)
+    end_time = timeit.default_timer() 
+    return (end_time - start_time)
+    
 
 def insertion_sort(arr):
   for i in range(1, len(arr)):
@@ -75,31 +60,16 @@ def bubble_sort(arr):
                 arr_aux[i], arr_aux[j] = arr_aux[j], arr_aux[i]
     return arr_aux
 
-def busquedaLineal(arr, valor):
-    for i, elemento in enumerate(arr):
-        if elemento == valor:
-            return i, elemento
-    return -1
-
-def busqueda_binaria(lista, objetivo):
-    izquierda, derecha = 0, len(lista) - 1
-    while izquierda <= derecha:
-        medio = (izquierda + derecha) // 2
-        if lista[medio] == objetivo:
-            return medio, lista[medio]
-        elif lista[medio] < objetivo:
-            izquierda = medio + 1
-        else:
-            derecha = medio - 1
-    return -1
-
 #Se inicializa una lista con números aleatorios
-lista_datos_str = [rand_str() for _ in range(2000)]
-lista_datos_str = eliminar_duplicados(lista_datos_str)
-lista_datos = [random.randint(1, 1000) for _ in range(20000)]
+lista_datos_str = [rand_str() for _ in range(200)]
+lista_datos = [random.randint(1, 1000) for _ in range(200)]
 
-#Selección aleatoria de dato a buscar
-dato_objetivo = random.choice(lista_datos_str)
+#Se inicializa vector para resultados de strings
+resultadosStrPreOrden = defaultdict(list)
+resultadosStrPostOrden = defaultdict(list)
+#Se inicializa vector para resultados de ints
+resultadosIntPreOrden = defaultdict(list)
+resultadosIntPostOrden = defaultdict(list)
 
 #Se define una lista de funciones a utilizar
 funciones_a_usar = [
@@ -111,23 +81,31 @@ funciones_a_usar = [
     list.sort
 ]
 
-print(ejec_con_timer(busquedaLineal, lista_datos_str, dato_objetivo))
-
 #Se ejecutan las funciones listadas a través de una función que incluye la funcionalidad del TimeIt con mensajes de consola
-for funcion in funciones_a_usar:
-    ejec_con_timer(funcion, lista_datos_str.copy())
+for i in range(10):
+    for funcion in funciones_a_usar:
+        resultadosStrPreOrden[funcion.__name__].append(ejec_con_timer(funcion, lista_datos_str.copy()))
+        resultadosIntPreOrden[funcion.__name__].append(ejec_con_timer(funcion, lista_datos.copy()))
 
 #Se ordena el listado
 lista_datos = quick_sort_rand(lista_datos)
 lista_datos_str = quick_sort_rand(lista_datos_str)
-print(ejec_con_timer(busqueda_binaria, lista_datos_str, dato_objetivo))
 #Se incorporan más datos
-cant = 100
+cant = 200
 print(f"Se incorporan {cant} nuevos datos")
 lista_datos+= [random.randint(1, 1000) for _ in range(cant)]
 lista_datos_str += [rand_str() for _ in range(cant)]
 
 #Se vuelven a ejecutar las funciones listadas
-for funcion in funciones_a_usar:
-    ejec_con_timer(funcion, lista_datos_str.copy())
+for i in range(10):
+    for funcion in funciones_a_usar:
+        resultadosStrPostOrden[funcion.__name__].append(ejec_con_timer(funcion, lista_datos_str.copy()))
+        resultadosIntPostOrden[funcion.__name__].append(ejec_con_timer(funcion, lista_datos.copy()))
 
+for funcion in funciones_a_usar:
+    print(f"Los tiempos antes de ordenar de {funcion.__name__} sobre Int son: {resultadosIntPreOrden[funcion.__name__]}")
+    print(f"Los tiempos antes de ordenar de {funcion.__name__} sobre Strings son: {resultadosStrPreOrden[funcion.__name__]}")
+
+for funcion in funciones_a_usar:
+    print(f"Los tiempos despues de ordenar de {funcion.__name__} sobre Int son: {resultadosIntPostOrden[funcion.__name__]}")
+    print(f"Los tiempos despues de ordenar de {funcion.__name__} sobre Strings son: {resultadosStrPostOrden[funcion.__name__]}")
