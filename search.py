@@ -1,6 +1,6 @@
-########################## ATENCION ################################
-###EJECUTAR ESTE CÓDIGO PRODUCIRÁ UN BUCLE PRACTICAMENTE INFINITO###
-####################################################################
+########################## ATENCION ######################################################
+###EJECUTAR ESTE CÓDIGO PRODUCIRÁ UN BUCLE PRACTICAMENTE INFINITO CON EL METODO BURBUJA###
+##########################################################################################
 import timeit
 import random
 import string
@@ -28,6 +28,23 @@ def busqueda_binaria(lista, objetivo):
             derecha = medio - 1
     return -1
 
+def bubble_sort(arr):
+   
+    for i in range(0,len(arr)-1):
+        for j in range(i + 1,len(arr)):
+            if arr[i] > arr[j]:
+                arr[i], arr[j] = arr[j], arr[i]
+    return arr
+
+def insertion_sort(arr):
+  for i in range(1, len(arr)):
+    key = arr[i]
+    j = i-1
+    while j >=0 and key < arr[j] :
+        arr[j+1] = arr[j]
+        j -= 1
+    arr[j+1] = key
+
 #Ejecuta la función enviada como parámetro, se incluye dato_obj en caso de que sea búsqueda, si no se incluye debe de ejecutar el ordenamiento.
 def ejec_con_timer(funcion, array, dato_obj = None):
     if dato_obj is None:
@@ -47,24 +64,27 @@ tiempoBinario = 100
 tiempoOrden = 0
 
 #Se generan datos iniciales
-lista_datos = [random.randint(1, 1000) for _ in range(10000)]
-#lista_datos = [rand_str() for _ in range(1000000)]
+#lista_datos = [random.randint(1, 1000) for _ in range(300000)]
+lista_datos = [rand_str() for _ in range(100000)]
 
 while (tiempoLineal < (tiempoBinario + tiempoOrden)):
-    lista_datos += [random.randint(1, 1000) for _ in range(1)]
-    #lista_datos += [rand_str()]
+    #lista_datos += [random.randint(1, 1000) for _ in range(1)]
+    lista_datos += [rand_str() for _ in range(1)]
     
     dato_objetivo = lista_datos[len(lista_datos) - 1]
 
     resultadoL, tiempoLineal = ejec_con_timer(busquedaLineal, lista_datos, dato_objetivo)
+    #Reemplazar en la siguiente linea el método a utilizar entre: list.sort - bubble_sort - insertion_sort
     lista_datos_ord, tiempoOrden = ejec_con_timer(list.sort, lista_datos.copy())
     resultadoB, tiempoBinario = ejec_con_timer(busqueda_binaria, lista_datos_ord, dato_objetivo)
     
+    #Comentar la siguiente linea en caso de que se desee trabajar exclusivamente sobre listas desordenadas.
+    #lista_datos = lista_datos_ord.copy()
     #Break en caso de error en búsqueda
     if resultadoL == -1 or resultadoB == -1:
         print("Objeto no encontrado")
         break
-    
+
     print(len(lista_datos),tiempoLineal, tiempoBinario + tiempoOrden)
 
 
